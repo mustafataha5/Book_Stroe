@@ -1,17 +1,27 @@
 from django.db import models
 import datetime
+import re 
 
 # Create your models here.
 class UserManager(models.Manager):
     def user_validation(self,postData): 
         errors = {}
         
+        if len(postData['first_name']) < 2: 
+            errors['first_name'] = 'First name must be at least 2 charcter'
+        if len(postData['last_name']) < 2: 
+            errors['last_name'] = 'Last name must be at least 2 charcter' 
+        EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+        if not EMAIL_REGEX.match(postData['email']):    # test whether a field matches the pattern            
+            errors['email'] = "Invalid email address!"    
         
+        if datetime.datetime.strptime(postData['birthday'],'%Y-%m-%d').date() > datetime.datetime.today() : 
+            errors['birthday'] = "Birthday must be in the past" 
         
         return errors
 
 class PostManager(models.Manager):
-    def user_validation(self,postData): 
+    def post_validation(self,postData): 
         errors = {}
         
         
@@ -21,7 +31,7 @@ class PostManager(models.Manager):
 
 
 class BookManager(models.Manager):
-    def Book_validation(self,postData): 
+    def book_validation(self,postData): 
         errors = {}
         
         
@@ -29,7 +39,7 @@ class BookManager(models.Manager):
         return errors
 
 class OrderManger(models.Manager):
-    def user_validation(self,postData): 
+    def order_validation(self,postData): 
         errors = {}
         
         
@@ -38,7 +48,7 @@ class OrderManger(models.Manager):
 
 
 class CommentManger(models.Manager):
-    def user_validation(self,postData): 
+    def comment_validation(self,postData): 
         errors = {}
         
         
@@ -56,7 +66,7 @@ class CategoryManger(models.Manager):
     
 
 class LanguageManger(models.Manager):
-    def Language_validation(self,postData): 
+    def language_validation(self,postData): 
         errors = {}
         
         
