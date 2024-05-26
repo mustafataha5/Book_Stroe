@@ -7,7 +7,23 @@ class UserManager(models.Manager):
         
         
         
+        return errors
+
+class PostManager(models.Manager):
+    def user_validation(self,postData): 
+        errors = {}
+        
+        
+        
         return errors 
+
+class CommentManger(models.Manager):
+    def user_validation(self,postData): 
+        errors = {}
+        
+        
+        
+        return errors  
 
 
 class User(models.Model): 
@@ -20,6 +36,28 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
+
+class Post(models.Model):
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
+    objects = PostManager()
+
+
+
+
+
+class Comment(models.Model):
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
+    objects = CommentManger()
+
+    
+
 
 
 
