@@ -67,6 +67,13 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     objects = CommentManger()
 
+
+class Order(models.Model):
+    confirm_buy = models.BooleanField(default=False)
+    user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     
 
 
