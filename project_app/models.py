@@ -25,7 +25,15 @@ class BookManager(models.Manager):
         
         
         
-        return errors 
+        return errors
+
+class OrderManger(models.Manager):
+    def user_validation(self,postData): 
+        errors = {}
+        
+        
+        
+        return errors   
 
 
 class CommentManger(models.Manager):
@@ -65,6 +73,9 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
+    
+class Author(models.Model): 
+    user = models.OneToOneField(User,on_delete=models.CASCADE)     
 
 class Post(models.Model):
     message = models.TextField()
@@ -94,6 +105,14 @@ class Category(models.Model):
 class Language(models.Model):
     name = models.CharField(max=45)
     objects = LanguageManger()
+
+class Order(models.Model):
+    confirm_buy = models.BooleanField(default=False)
+    user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = OrderManger()
+
     
 
 class Book(models.Model): 
