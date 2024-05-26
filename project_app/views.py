@@ -4,7 +4,7 @@ from  django.contrib import messages
 import bcrypt
 import datetime
 # Create your views here.
-
+#commnet
 def index (request): 
     if  not 'userID' in request.session : 
         return render(request,'user_main_page.html')
