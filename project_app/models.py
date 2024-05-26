@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 # Create your models here.
 class UserManager(models.Manager):
@@ -105,23 +106,26 @@ class Language(models.Model):
     name = models.CharField(max_length=45)
     objects = LanguageManger()
     
-
+class Author(models.Model): 
+    first_name = models.CharField(max_length=45,default=' ')
+    last_name = models.CharField(max_length=45,default=' ')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True) 
+    
 class Book(models.Model): 
     title = models.CharField(max_length=45)
     description = models.TextField()
     number_of_pages = models.IntegerField()
     url_image = models.TextField()
     price = models.FloatField()
+    author = models.ForeignKey(Author,related_name='books',on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name='books', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, related_name='books', on_delete=models.CASCADE)
-    liked_by_users= models.ManyToManyField(User,related_name='likes_books')
+    liked_by_users= models.ManyToManyField(User,related_name='likes_books',)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = BookManager()
 
-class Author(models.Model): 
-    user = models.OneToOneField(User,on_delete=models.CASCADE) 
-    books = models.ManyToManyField(Book,related_name='authors')
 
 
 class Order(models.Model):
