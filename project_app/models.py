@@ -25,7 +25,15 @@ class BookManager(models.Manager):
         
         
         
-        return errors 
+        return errors
+
+class OrderManger(models.Manager):
+    def user_validation(self,postData): 
+        errors = {}
+        
+        
+        
+        return errors   
 
 
 class CommentManger(models.Manager):
@@ -73,6 +81,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects = OrderManger()
 
     
 
