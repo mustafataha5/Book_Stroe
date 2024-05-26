@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+import bcrypt
 import re 
 
 # Create your models here.
@@ -13,12 +14,35 @@ class UserManager(models.Manager):
             errors['last_name'] = 'Last name must be at least 2 charcter' 
         EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
         if not EMAIL_REGEX.match(postData['email']):    # test whether a field matches the pattern            
-            errors['email'] = "Invalid email address!"    
+            errors['email'] = "Invalid email address!"
+        elif len(User.objects.filter(email=postData['email'])) > 0:
+             errors['email'] = "Email already used!!"
+                    
         
-        if datetime.datetime.strptime(postData['birthday'],'%Y-%m-%d').date() > datetime.datetime.today() : 
-            errors['birthday'] = "Birthday must be in the past" 
-        
+        if len(postData['password']) <8: 
+             errors['password'] = 'Password must be at least  8 characters .'
+        if postData['password'] != postData['check_password'] : 
+            errors['check_password'] = 'Does not match password .'   
+        if datetime.datetime.strptime(postData['birthday'],'%Y-%m-%d').date() > datetime.date.today() :
+            errors['birthday'] ='Birthday must be in past.'
+            
+        days =  datetime.datetime.strptime(postData['birthday'],'%Y-%m-%d').date()-datetime.date.today()   
+        if  days.days > 0 and days.days < 13*365:
+            errors['birthday'] ='You must be at least 13 old year.'
         return errors
+    
+    
+    def login_validation(self,postData): 
+        errors= {}
+        
+        if len(User.objects.filter(email=postData['email'])) == 0 : 
+            errors['login_email'] = "Wrong email address "
+            errors['login_password'] = "Wrong password"
+        else: 
+            user = User.objects.get(email=postData['email'])
+            if not bcrypt.checkpw(postData['password'].encode(),user.password.encode()) : 
+                errors['login_password'] = "Wrong password"
+        return errors   
 
 class PostManager(models.Manager):
     def post_validation(self,postData): 
@@ -80,7 +104,7 @@ class User(models.Model):
     email = models.CharField(max_length=128)
     password = models.CharField(max_length=64)
     birthday = models.DateField(null=True)
-    gender = models.BooleanField(null=True)
+    gender = models.CharField(max_length=7)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
