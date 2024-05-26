@@ -25,7 +25,15 @@ class BookManager(models.Manager):
         
         
         
-        return errors 
+        return errors
+
+class OrderManger(models.Manager):
+    def user_validation(self,postData): 
+        errors = {}
+        
+        
+        
+        return errors   
 
 
 class CommentManger(models.Manager):
@@ -66,6 +74,14 @@ class Comment(models.Model):
     user = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     objects = CommentManger()
+
+
+class Order(models.Model):
+    confirm_buy = models.BooleanField(default=False)
+    user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = OrderManger()
 
     
 
