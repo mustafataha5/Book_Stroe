@@ -16,6 +16,17 @@ class PostManager(models.Manager):
         
         
         return errors 
+        
+
+
+class BookManager(models.Manager):
+    def Book_validation(self,postData): 
+        errors = {}
+        
+        
+        
+        return errors 
+
 
 class CommentManger(models.Manager):
     def user_validation(self,postData): 
@@ -57,6 +68,20 @@ class Comment(models.Model):
     objects = CommentManger()
 
     
+
+
+
+class Book(models.Model): 
+    title = models.CharField(max=45)
+    description = models.TextField()
+    number_of_pages = models.CharField(max=20)
+    url_image = models.TextField()
+    price = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = BookManager()
+
+
 
 
 
