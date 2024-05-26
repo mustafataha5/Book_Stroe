@@ -74,8 +74,7 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
     
-class Author(models.Model): 
-    user = models.OneToOneField(User,on_delete=models.CASCADE)     
+ 
 
 class Post(models.Model):
     message = models.TextField()
@@ -96,36 +95,51 @@ class Comment(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max=45)
+    name = models.CharField(max_length=45)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = CategoryManger()
 
 
 class Language(models.Model):
-    name = models.CharField(max=45)
+    name = models.CharField(max_length=45)
     objects = LanguageManger()
+    
+
+class Book(models.Model): 
+    title = models.CharField(max_length=45)
+    description = models.TextField()
+    number_of_pages = models.IntegerField()
+    url_image = models.TextField()
+    price = models.FloatField()
+    category = models.ForeignKey(Category, related_name='books', on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, related_name='books', on_delete=models.CASCADE)
+    liked_by_users= models.ManyToManyField(User,related_name='likes_books')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = BookManager()
+
+class Author(models.Model): 
+    user = models.OneToOneField(User,on_delete=models.CASCADE) 
+    books = models.ManyToManyField(Book,related_name='authors')
+
 
 class Order(models.Model):
     confirm_buy = models.BooleanField(default=False)
     user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    books= models.ManyToManyField(Book,related_name='orders')
     objects = OrderManger()
-
     
-
-class Book(models.Model): 
-    title = models.CharField(max=45)
-    description = models.TextField()
-    number_of_pages = models.CharField(max=20)
-    url_image = models.TextField()
-    price = models.FloatField()
-    category = models.ForeignKey(Category, related_name='books', on_delete=models.CASCADE)
-    language = models.ForeignKey(Language, related_name='books', on_delete=models.CASCADE)
+class Review (models.Model): 
+    users = models.ForeignKey(User,related_name='reviews', on_delete=models.CASCADE)
+    books = models.ForeignKey(Book,related_name='reviews', on_delete=models.CASCADE) 
+    review_level = models.IntegerField()
+    message = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    objects = BookManager()
+    updated_at = models.DateTimeField(auto_now=True)   
+
 
 
 
